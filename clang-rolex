@@ -6,16 +6,8 @@ echo "Let's Start It!"
 git clone --quiet -j32 https://github.com/crDroidMod/android_prebuilts_clang_host_linux-x86_clang-5900059 -b 9.0 --depth=1 clang
 git clone --quiet -j32 https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9 -b android-9.0.0_r49 --depth=1 aarch64
 git clone --quiet -j32 https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9 -b android-9.0.0_r49 --depth=1 arm32
-git clone --quiet -j32 https://github.com/fadlyas07/AnyKernel3 --depth=1 -b rolex anykernel3 && rm -rf any*/LI* && rm -rf any*/READ
-if [ "$is_test" = true ]; then
-     echo "Its test build"
-     unset chat_id
-     unset token
-     export chat_id=${chat_id}
-     export token=${my_token}
-else
-     echo "Its different version"
-fi
+git clone --quiet -j32 https://github.com/Mhmmdfas/scripts-build --depth=1 anykernel3
+echo "clone succesfully"
 CT="$(pwd)/clang/bin/clang"
 GCC="$(pwd)/aarch64/bin/aarch64-linux-android-"
 GCC32="$(pwd)/arm32/bin/arm-linux-androideabi-"
@@ -30,33 +22,33 @@ export KBUILD_BUILD_USER=Mhmmdfas
 export KBUILD_BUILD_HOST=CI-${NUM}
 export USE_CCACHE=1
 export CACHE_DIR=~/.ccache
-git config --global user.email "fadlyardhians@gmail.com"
-git config --global user.name "fadlyardhians"
+git config --global user.email "fadlyardhians@outlook.com"
+git config --global user.name "Mhmmdfas"
 # send sticker
 function sticker() {
         curl -s -X POST "https://api.telegram.org/bot${token}/sendSticker" \
-                        -d sticker="CAADBQAD3AADfULDLpHzWZltpdJ5FgQ" \
+                        -d sticker="CAADBQADJAEAAn1Cwy6oClWEDGYAAQEWBA" \
                         -d chat_id=${chat_id}
 }
 # Send status
 function sendinfo() {
         curl -s -X POST "https://api.telegram.org/bot${token}/sendMessage" \
-                        -d chat_id=${chat_id} \
+                        -d chat_id="${chat_id}" \
                         -d "disable_web_page_preview=true" \
                         -d "parse_mode=html" \
-                        -d text="<b>SteelHeart CI new build is up</b>!!%0AStarted on <code>${MACHINE}</code> %0AFor devices <code>${DEVICES}</code> %0AFrom branch: <code>$(git rev-parse --abbrev-ref HEAD)</code> %0ALatest Commit <code>$(git log --pretty=format:'"%h : %s"' -1)</code>%0ACompiler: <code>$(${CT} --version | head -n 1 | perl -pe 's/\(.*?\)//gs' | sed -e 's/  */ /g')</code>%0ACompiled with: <code>$(${GCC}gcc --version | head -n 1)</code>%0ACompiled with: <code>$(${GCC32}gcc --version | head -n 1)</code>%0AStarted on: <code>$(TZ=Asia/Jakarta date)</code>"
+                        -d text="<xb>Greenforce-Pure CI new build is up</b>!!%0AStarted on <code>${MACHINE}</code> %0AFor devices <code>${DEVICES}</code> %0AFrom branch: <code>$(git rev-parse --abbrev-ref HEAD)</code> %0ALast Commit <code>$(git log --pretty=format:'"%h : %s"' -1)</code>%0ACompiler: <code>$(${CT} --version | head -n 1 | perl -pe 's/\(.*?\)//gs' | sed -e 's/  */ /g')</code>%0ACompiled with: <code>$(${GCC}gcc --version | head -n 1)</code>%0ACompiled with: <code>$(${GCC32}gcc --version | head -n 1)</code>%0AStarted at: <code>$(TZ=Asia/Jakarta date)</code>"
 }
 # Send private status
 function sendpriv() {
         curl -s -X POST "https://api.telegram.org/bot${token}/sendMessage" \
-                        -d chat_id=784548477 \
+                        -d chat_id="${my_id}" \
                         -d "disable_web_page_preview=true" \
                         -d "parse_mode=html" \
                         -d text="SteelHeart new build for Rolex!%0ACompile Started At [ <code>$(TZ=Asia/Jakarta date)</code> ]%0ALink CI <a href='${CIRCLE_BUILD_URL}'>here</a> | #${NUM}."
 }
 # Push Kernel
 function push() {
-        cd anykernel3
+        cd anykernel3/anykernel-rolex/
 	ZIP=$(echo *.zip)
 	curl -F document=@$ZIP "https://api.telegram.org/bot${token}/sendDocument" \
 			-F chat_id="${chat_id}" \
@@ -86,17 +78,13 @@ function compile() {
                 finerr
                 exit 1
             fi
-        cp out/arch/arm64/boot/Image.gz-dtb anykernel3/zImage
+        cp out/arch/arm64/boot/Image.gz-dtb anykernel3/anykernel-rolex/zImage
         paste
 }
 # Zipping
 function zipping() {
-    cd anykernel3 || exit 1
-    if [ "$is_test" = true ]; then
-        zip -r9 Steelheart-rolex-ALPHA-"${TANGGAL}".zip *
-    else
-        zip -r9 Steelheart-rolex-"${TANGGAL}".zip *
-    fi
+    cd anykernel3/anykernel-rolex/ || exit 1
+    zip -r9 Greenforce-pure-rolex-"${TANGGAL}".zip *
     cd ... #uwow
 }
 rm -rf out
