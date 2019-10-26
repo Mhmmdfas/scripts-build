@@ -21,7 +21,7 @@ export KBUILD_BUILD_HOST=CI-${NUM}
 export USE_CCACHE=1
 export CACHE_DIR=~/.ccache
 git config --global user.email "fadlyardhians@gmail.com"
-git config --global user.name "fadlyardhians"
+git config --global user.name "Mhmmdfas"
 # Send private status
 function sendpriv() {
         curl -s -X POST "https://api.telegram.org/bot${token}/sendMessage" \
