@@ -3,23 +3,32 @@
 # For Xiaomi Redmi 4A/5A
 # Circle CI/CD
 echo "Let's Start It!"
-git clone -j32 https://github.com/crDroidMod/android_prebuilts_clang_host_linux-x86_clang-5900059 -b 9.0 --depth=1 clang
-git clone -j32 https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9 -b android-9.0.0_r49 --depth=1 aarch64
-git clone -j32 https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9 -b android-9.0.0_r49 --depth=1 arm32
-git clone -j32 https://github.com/Mhmmdfas/scripts-build --depth=1 anykernel3 && rm -rf anykernel3/anykernel-rolex/LI* && rm -rf anykernel3/anykernel-rolex/READ*
-echo "clone succesfully"
+git clone --quiet -j32 https://github.com/crDroidMod/android_prebuilts_clang_host_linux-x86_clang-5900059 -b 9.0 --depth=1 clang
+git clone --quiet -j32 https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9 -b android-9.0.0_r49 --depth=1 aarch64
+git clone --quiet -j32 https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9 -b android-9.0.0_r49 --depth=1 arm32
+git clone --quiet -j32 https://github.com/Mhmmdfas/AnyKernel3 --depth=1 -b rolex anykernel3 && rm -rf any*/LI* && rm -rf any*/READ
+if [ "$is_test" = true ]; then
+     echo "Its test build"
+     unset chat_id
+     unset token
+     export chat_id=${chat_id}
+     export token=${my_token}
+else
+     echo "Its different version"
+fi
 CT="$(pwd)/clang/bin/clang"
 GCC="$(pwd)/aarch64/bin/aarch64-linux-android-"
 GCC32="$(pwd)/arm32/bin/arm-linux-androideabi-"
 IMAGE=$(pwd)/out/arch/arm64/boot/Image.gz-dtb
 MACHINE="Circle CI/CD"
 DEVICES="Xiaomi Redmi 4A/5A"
+CONFIG="rolex_defconfig"
 NUM=$(echo $CIRCLE_BUILD_NUM | cut -c 1-2)
 TANGGAL=$(TZ=Asia/Jakarta date +'%d%m%y')
 START=$(date +"%s")
 export ARCH=arm64
 export KBUILD_BUILD_USER=Mhmmdfas
-export KBUILD_BUILD_HOST=CI-${NUM}
+export KBUILD_BUILD_HOST=${NUM}
 export USE_CCACHE=1
 export CACHE_DIR=~/.ccache
 git config --global user.email "fadlyardhians@outlook.com"
@@ -48,7 +57,7 @@ function sendpriv() {
 }
 # Push Kernel
 function push() {
-        cd cd anykernel3/anykernel-rolex
+        cd anykernel3
 	ZIP=$(echo *.zip)
 	curl -F document=@$ZIP "https://api.telegram.org/bot${token}/sendDocument" \
 			-F chat_id="${chat_id}" \
@@ -68,7 +77,7 @@ function finerr() {
 }
 # Compile kernel
 function compile() {
-        make -s -C $(pwd) O=out rolex_defconfig
+        make -s -C $(pwd) O=out ${CONFIG}
         make -s -C $(pwd) CC=${CT} \
                           CROSS_COMPILE=${GCC} \
                           CROSS_COMPILE_ARM32=${GCC32} \
@@ -78,13 +87,17 @@ function compile() {
                 finerr
                 exit 1
             fi
-        cp out/arch/arm64/boot/Image.gz-dtb cd anykernel3/anykernel-rolex/zImage
+        cp out/arch/arm64/boot/Image.gz-dtb anykernel3/zImage
         paste
 }
 # Zipping
 function zipping() {
-    cd anykernel3/anykernel-rolex || exit 1
-    zip -r9 Greenforce-pure-rolex-"${TANGGAL}".zip *
+    cd anykernel3 || exit 1
+    if [ "$is_test" = true ]; then
+        zip -r9 Greenforce-rolex-ALPHA-rolex-"${TANGGAL}".zip *
+    else
+        zip -r9 Greenforce-pure-rolex-"${TANGGAL}".zip *
+    fi
     cd ... #uwow
 }
 rm -rf out
