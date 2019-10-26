@@ -20,19 +20,19 @@ export KBUILD_BUILD_USER=Mhmmdfas
 export KBUILD_BUILD_HOST=CI-${NUM}
 export USE_CCACHE=1
 export CACHE_DIR=~/.ccache
-git config --global user.email "fadlyardhians@outlook.com"
-git config --global user.name "Mhmmdfas"
+git config --global user.email "fadlyardhians@gmail.com"
+git config --global user.name "fadlyardhians"
 # Send private status
 function sendpriv() {
         curl -s -X POST "https://api.telegram.org/bot${token}/sendMessage" \
-                        -d chat_id="${my_id}" \
+                        -d chat_id=784548477 \
                         -d "disable_web_page_preview=true" \
                         -d "parse_mode=html" \
-                        -d text="SteelHeart new build for Riva!%0ACompile Started At [ <code>$(TZ=Asia/Jakarta date)</code> ]%0ALink CI <a href='${CIRCLE_BUILD_URL}'>here</a> | #${NUM}."
+                        -d text="Greenforce new build for Riva!%0ACompile Started At [ <code>$(TZ=Asia/Jakarta date)</code> ]%0ALink CI <a href='${CIRCLE_BUILD_URL}'>here</a> | #${NUM}."
 }
 # Push Kernel
 function push() {
-        cd anykernel3/anykernel-riva/
+        cd anykernel3/anykernel-riva
 	ZIP=$(echo *.zip)
 	curl -F document=@$ZIP "https://api.telegram.org/bot${token}/sendDocument" \
 			-F chat_id="${chat_id}" \
@@ -67,7 +67,7 @@ function compile() {
 }
 # Zipping
 function zipping() {
-    cd anykernel3/anykernel-riva/ || exit 1
+    cd anykernel3/anykernel-riva || exit 1
     zip -r9 greenforce-pure-riva-"${TANGGAL}".zip *
     cd ... #uwow
 }
