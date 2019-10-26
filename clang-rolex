@@ -85,7 +85,7 @@ function compile() {
 function zipping() {
     cd anykernel3/anykernel-rolex || exit 1
     zip -r9 Greenforce-pure-rolex-"${TANGGAL}".zip *
-    cd ... #uwow
+    cd
 }
 rm -rf out
 sticker

@@ -69,7 +69,7 @@ function compile() {
 function zipping() {
     cd anykernel3/anykernel-riva || exit 1
     zip -r9 greenforce-pure-riva-"${TANGGAL}".zip *
-    cd ... #uwow
+    cd
 }
 rm -rf out
 sendpriv
