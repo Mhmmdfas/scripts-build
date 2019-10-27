@@ -92,9 +92,9 @@ function compile() {
 function zipping() {
     cd anykernel3 || exit 1
     if [ "$is_test" = true ]; then
-        zip -r9q GreenforceQ-ALPHA-rolex-"${TANGGAL}".zip * -x .git README.md
+        zip -r9q Greenforce-Q-ALPHA-rolex-"${TANGGAL}".zip * -x .git README.md
     else
-        zip -r9q GreenforceQ-BETA-rolex-"${TANGGAL}".zip * -x .git README.md
+        zip -r9q Greenforce-Q-BETA-rolex-"${TANGGAL}".zip * -x .git README.md
     fi
     cd ... #uwow
 }
