@@ -7,7 +7,7 @@ git clone --quiet -j32 https://github.com/Mhmmdfas/anykernel3 --depth=1 -b rolex
 
 CT="$(pwd)/clang/bin/clang"
 GCC="$(pwd)/aarch64/bin/aarch64-linux-android-"
-GCC32="$(pwd)/arm32/bin/arm-linux-androideabi-"
+GCCARM="$(pwd)/arm32/bin/arm-linux-androideabi-"
 curl -s -F chat_id=${chat_id} -F sticker="CAADBQADJAEAAn1Cwy6oClWEDGYAAQEWBA" https://api.telegram.org/bot${token}/sendSticker
 curl -s -X POST https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id} -d "disable_web_page_preview=true" -d "parse_mode=html&text=<b>// winxkernel //</b>%0ACompile Started"'!'"%0A<b>For device</b> <code>RIVA (Redmi 5A)</code>%0A<b>For Oreo/Pie</b>%0A<b>Under Commit</b> <code>$(git log --pretty=format:'"%h : %s"' -1)</code>%0A<b>Compiler</b> <code>$(${GCC}gcc --version | head -n 1)</code>%0A<b>Compiler</b> <code>$(${GCCARM}gcc --version | head -n 1)</code>%0A<b>Clang</b> <code>$(${CT} --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g')</code>%0A<b>Started on</b> <code>$(date)</code>%0A<b>Build Status:</b> #untested"
 tanggal=$(date +'%H%M-%d%m%y')
@@ -36,14 +36,14 @@ if ! [ -a $IMAGE ]; then
 	finerr
 	exit 1
 fi
-cp out/arch/arm64/boot/Image.gz-dtb AnyKernel/zImage
+cp out/arch/arm64/boot/Image.gz-dtb anykernel3/zImage
 sprunge
-cd AnyKernel
-zip -r9 winxkernel-${tanggal}.zip *
+cd anykernel3
+zip -r9 perf-${tanggal}.zip *
 END=$(date +"%s")
 DIFF=$(($END - $START))
-curl -F chat_id="${chat_id}" -F document=@"winxkernel-${tanggal}.zip" -F "disable_web_page_preview=true" -F "parse_mode=html" -F caption="Build took $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) second(s). <b>Logs</b> <a href='${HASIL}'>here</a> | #riva" https://api.telegram.org/bot${token}/sendDocument
+curl -F chat_id="${chat_id}" -F document=@"perf-${tanggal}.zip" -F "disable_web_page_preview=true" -F "parse_mode=html" -F caption="Build took $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) second(s). <b>Logs</b> <a href='${HASIL}'>here</a> | #riva" https://api.telegram.org/bot${token}/sendDocument
 cd ..
 rm -rf out
-rm -rf AnyKernel/zImage
-rm -rf AnyKernel/winxkernel*.zip
+rm -rf anykernel3/zImage
+rm -rf anykernel3/*.zip
