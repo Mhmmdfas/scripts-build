@@ -109,7 +109,30 @@ function compile() {
         make -s -C $(pwd) CROSS_COMPILE=${GCC_64} \
                           CROSS_COMPILE_ARM32=${GCC_32} \
                           O=out ${JOBS} ${LOAD} 2>&1| tee build.log
-     UTS=$(cat out/include/generated/compile.h | grep UTS_VERSION | cut -d '"' -f2)
+# Credit @adekmaulana
+# @Kry9toN
+OUTDIR="$(pwd)/out/"
+SRCDIR="$(pwd)/"
+MODULEDIR="$(pwd)/${ZIPDIR}/modules/system/lib/modules/"
+PRONTO=${MODULEDIR}pronto/pronto_wlan.ko
+STRIP="$(pwd)/gcc/bin/$(echo "$(find "$(pwd) /gcc/bin" -type f -name "aarch64-*-gcc")" | awk -F '/' '{print $NF}' |\
+sed -e 's/gcc/strip/')"
+
+for MOD in $(find "${OUTDIR}" -name '*.ko') ; do
+	"${STRIP}" --strip-unneeded --strip-debug "${MOD}" &> /dev/null
+	"${SRCDIR}"/scripts/sign-file sha512 \
+			"${OUTDIR}/signing_key.priv" \
+			"${OUTDIR}/signing_key.x509" \
+			"${MOD}"
+	find "${OUTDIR}" -name '*.ko' -exec cp {} "${MODULEDIR}" \;
+	case ${MOD} in
+		*/wlan.ko)
+		cp -ar "${MOD}" "${PRONTO}"
+	esac
+done
+
+# Telegram Kernel Info
+    UTS=$(cat out/include/generated/compile.h | grep UTS_VERSION | cut -d '"' -f2)
 	LINUX_NAME=$(cat out/include/generated/compile.h | grep LINUX_COMPILE_BY | cut -d '"' -f2)
 	LINUX_HOST=$(cat out/include/generated/compile.h | grep LINUX_COMPILE_HOST | cut -d '"' -f2)
 	LINUX_VER=$(cat out/.config | grep Linux/arm64 | cut -d " " -f3)
