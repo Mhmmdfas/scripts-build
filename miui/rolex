@@ -90,7 +90,6 @@ function push() {
 }
 # Push Kernel into my telegram
 function testprivv() {
-        cd ${ZIPDIR}
 	ZIP=$(echo *.zip)
 	curl -F document=@$ZIP "https://api.telegram.org/bot${token}/sendDocument" \
 			-F chat_id=${DEV_ID} \
@@ -123,25 +122,25 @@ function compile() {
                           CROSS_COMPILE_ARM32=${GCC_32} \
                           O=out ${JOBS} ${LOAD} 2>&1| tee build.log
 # Credit @adekmaulana
-# @Kry9toN & @rama982
-OUTDIR="$(pwd)/out/"
-SRCDIR="$(pwd)/"
-MODULEDIR="$(pwd)/${ZIPDIR}/modules/system/lib/modules/"
+# @Kry9toN
+OUTDIR="$PWD/out/"
+SRCDIR="$PWD/"
+MODULEDIR="$PWD/${ZIPDIR}/modules/system/lib/modules/"
 PRONTO=${MODULEDIR}pronto/pronto_wlan.ko
 STRIP="$(pwd)/gcc/bin/$(echo "$(find "$(pwd)/gcc/bin" -type f -name "aarch64-*-gcc")" | awk -F '/' '{print $NF}' |\
                 sed -e 's/gcc/strip/')"
-for MODULES in $(find "$OUTDIR" -name '*.ko'); do
-	"${STRIP}" --strip-unneeded --strip-debug "${MODULES}"
-	        "$OUTDIR/scripts/sign-file" sha512 \
-			"$OUTDIR/certs/signing_key.pem" \
-			"$OUTDIR/certs/signing_key.x509" \
-			"${MODULES}"
-   case ${MODULES} in
-                */wlan.ko)
-	cp "${MODULES}" "${MODULEDIR}/qca_cld2_wlan.ko" ;;
+for MOD in $(find "${OUTDIR}" -name '*.ko') ; do
+	        "${STRIP}" --strip-unneeded --strip-debug "${MOD}"
+	        "${SRCDIR}/scripts/sign-file" sha512 \
+			"${OUTDIR}/signing_key.priv" \
+			"${OUTDIR}/signing_key.x509" \
+			"${MOD}"
+	find "${OUTDIR}" -name '*.ko' -exec cp {} "${MODULEDIR}" \;
+	case ${MOD} in
+		*/wlan.ko)
+		cp -ar "${MOD}" "${PRONTO}"
 	esac
-    done
-    echo -e "\n(i) Done moving modules"
+done
 # Telegram Kernel Info
     UTS=$(cat out/include/generated/compile.h | grep UTS_VERSION | cut -d '"' -f2)
 	LINUX_NAME=$(cat out/include/generated/compile.h | grep LINUX_COMPILE_BY | cut -d '"' -f2)
