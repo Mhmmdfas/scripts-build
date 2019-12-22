@@ -11,7 +11,7 @@ STICKER="CAADBQADPwEAAn1Cwy4LGnCzWtePdRYE"
 NAME="GREENFORCE"
 CODENAME="riva"
 CONFIG="riva_defconfig"
-TYPE="CAF"
+TYPE="MIUI"
 #Credits to @Nicklas373
 COMMIT="$(git --no-pager log --pretty=format:'"%h - %s by %an"' -1)"
 
