@@ -23,7 +23,7 @@ LOAD="-l60"
 EXTRA="--depth=1"
 
 #Material's of GREENFORCE kernel
-ZIPLINK="https://github.com/Mhmmdfas/anykernel-3 -b rolex"
+ZIPLINK="https://github.com/Mhmmdfas/anykernel-2 -b miui-rolex-riva"
 GCC64="https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9 -b android-7.1.2_r39"
 GCC32="https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9 -b android-7.1.2_r39"
 
