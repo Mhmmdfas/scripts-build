@@ -24,7 +24,7 @@ LOAD="-l60"
 EXTRA="--depth=1"
 
 #Material's of GREENFORCE kernel
-ZIPLINK="https://github.com/Mhmmdfas/AnyKernel3-1"
+ZIPLINK="https://github.com/Mhmmdfas/anykernel-2 -b miui-rolex-riva"
 GCC64="https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9 -b android-7.1.2_r39"
 GCC32="https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9 -b android-7.1.2_r39"
 
@@ -111,16 +111,15 @@ function compile() {
                           O=out ${JOBS} ${LOAD} 2>&1| tee build.log
 # Credit @adekmaulana
 # @Kry9toN
-OUTDIR="$(pwd)/out/"
-SRCDIR="$(pwd)/"
-MODULEDIR="$(pwd)/${ZIPDIR}/modules/system/lib/modules/"
+OUTDIR="$PWD/out/"
+SRCDIR="$PWD/"
+MODULEDIR="$PWD/${ZIPDIR}/modules/system/lib/modules/"
 PRONTO=${MODULEDIR}pronto/pronto_wlan.ko
-STRIP="$(pwd)/gcc/bin/$(echo "$(find "$(pwd) /gcc/bin" -type f -name "aarch64-*-gcc")" | awk -F '/' '{print $NF}' |\
-sed -e 's/gcc/strip/')"
-
+STRIP="$(pwd)/gcc/bin/$(echo "$(find "$(pwd)/gcc/bin" -type f -name "aarch64-*-gcc")" | awk -F '/' '{print $NF}' |\
+                sed -e 's/gcc/strip/')"
 for MOD in $(find "${OUTDIR}" -name '*.ko') ; do
-	"${STRIP}" --strip-unneeded --strip-debug "${MOD}" &> /dev/null
-	"${SRCDIR}"/scripts/sign-file sha512 \
+	        "${STRIP}" --strip-unneeded --strip-debug "${MOD}"
+	        "${SRCDIR}/scripts/sign-file" sha512 \
 			"${OUTDIR}/signing_key.priv" \
 			"${OUTDIR}/signing_key.x509" \
 			"${MOD}"
