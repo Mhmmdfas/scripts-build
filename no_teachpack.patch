@@ -1,0 +1,13 @@
+diff --git a/Makefile b/Makefile
+index c9adf6d3b17b..3ae28be711ac 100644
+--- a/Makefile
++++ b/Makefile
+@@ -578,7 +578,7 @@ scripts: scripts_basic include/config/auto.conf include/config/tristate.conf \
+ 
+ # Objects we will link into vmlinux / subdirs we need to visit
+ init-y		:= init/
+-drivers-y	:= drivers/ sound/ firmware/ techpack/
++drivers-y	:= drivers/ sound/ firmware/ # techpack/
+ net-y		:= net/
+ libs-y		:= lib/
+ core-y		:= usr/
